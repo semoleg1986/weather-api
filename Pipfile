@@ -7,6 +7,8 @@ name = "pypi"
 django = "*"
 requests = "*"
 python-telegram-bot = "*"
+geopy = "*"
+translate = "*"
 
 [dev-packages]
 

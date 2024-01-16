@@ -4,6 +4,7 @@ import requests
 from geopy.geocoders import Nominatim
 from translate import Translator
 from .models import Weather
+from decouple import config
 
 class WeatherAPIView(View):
     def get(self, request):
@@ -43,7 +44,8 @@ class WeatherAPIView(View):
                 }
             else:
                 yandex_api_url = f"https://api.weather.yandex.ru/v2/informers?lat={latitude}&lon={longitude}"
-                headers = {"X-Yandex-API-Key": "439ea7e5-9881-4f48-ae4d-1a1a49488395"}
+                yandex_api_key = config('YANDEX_API_KEY')
+                headers = {"X-Yandex-API-Key": yandex_api_key}
 
                 try:
                     response = requests.get(yandex_api_url, headers=headers)

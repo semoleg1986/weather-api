@@ -9,6 +9,7 @@ requests = "*"
 python-telegram-bot = "*"
 geopy = "*"
 translate = "*"
+python-decouple = "*"
 
 [dev-packages]
 

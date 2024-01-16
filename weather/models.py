@@ -6,7 +6,9 @@ class Weather(models.Model):
     pressure = models.FloatField()
     wind_speed = models.FloatField()
     latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)  
+    longitude = models.FloatField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.city

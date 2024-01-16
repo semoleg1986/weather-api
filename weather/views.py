@@ -5,6 +5,8 @@ from geopy.geocoders import Nominatim
 from translate import Translator
 from .models import Weather
 from decouple import config
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 class WeatherAPIView(View):
     def get(self, request):
@@ -30,44 +32,49 @@ class WeatherAPIView(View):
 
 
     def get_weather_data(self, latitude, longitude, city_name):
-            if latitude is None or longitude is None:
-                return {'error': 'Coordinates not found for the specified city.'}
+        if latitude is None or longitude is None:
+            return {'error': 'Coordinates not found for the specified city.'}
 
-            translated_city_name = self.translate_city_name(city_name)
-            weather_record = Weather.objects.filter(latitude=latitude, longitude=longitude, city=translated_city_name).first()
+        translated_city_name = self.translate_city_name(city_name)
+        weather_record = Weather.objects.filter(latitude=latitude, longitude=longitude, city=translated_city_name).first()
 
-            if weather_record:
+        if weather_record:
+            update_threshold = timezone.now() - timedelta(minutes=30)
+            print("db")
+            if weather_record.updated >= update_threshold:
                 return {
                     'temperature': weather_record.temperature,
                     'pressure': weather_record.pressure,
                     'wind_speed': weather_record.wind_speed,
                 }
-            else:
-                yandex_api_url = f"https://api.weather.yandex.ru/v2/informers?lat={latitude}&lon={longitude}"
-                yandex_api_key = config('YANDEX_API_KEY')
-                headers = {"X-Yandex-API-Key": yandex_api_key}
 
-                try:
-                    response = requests.get(yandex_api_url, headers=headers)
-                    response.raise_for_status()
+        yandex_api_url = f"https://api.weather.yandex.ru/v2/informers?lat={latitude}&lon={longitude}"
+        yandex_api_key = config('YANDEX_API_KEY')
+        headers = {"X-Yandex-API-Key": yandex_api_key}
 
-                    yandex_data = response.json()['fact']
+        try:
+            response = requests.get(yandex_api_url, headers=headers)
+            response.raise_for_status()
 
-                    Weather.objects.create(
-                        latitude=latitude,
-                        longitude=longitude,
-                        city=translated_city_name,
-                        temperature=yandex_data['temp'],
-                        pressure=yandex_data['pressure_mm'],
-                        wind_speed=yandex_data['wind_speed'],
-                    )
+            yandex_data = response.json()['fact']
+            print("API")
+            Weather.objects.update_or_create(
+                latitude=latitude,
+                longitude=longitude,
+                city=translated_city_name,
+                defaults={
+                    'temperature': yandex_data['temp'],
+                    'pressure': yandex_data['pressure_mm'],
+                    'wind_speed': yandex_data['wind_speed'],
+                }
+            )
 
-                    return {
-                        'temperature': yandex_data['temp'],
-                        'pressure': yandex_data['pressure_mm'],
-                        'wind_speed': yandex_data['wind_speed'],
-                    }
-                except requests.RequestException as e:
-                    return {
-                        'error': f"Failed to fetch data from Yandex API: {str(e)}",
-                    }
+            return {
+                'temperature': yandex_data['temp'],
+                'pressure': yandex_data['pressure_mm'],
+                'wind_speed': yandex_data['wind_speed'],
+            }
+        except requests.RequestException as e:
+            return {
+                'error': f"Failed to fetch data from Yandex API: {str(e)}",
+            }

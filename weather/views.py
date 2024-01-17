@@ -39,7 +39,7 @@ class WeatherAPIView(View):
 
         translated_city_name = self.translate_city_name(city_name)
         print(translated_city_name)
-        weather_record = Weather.objects.filter(latitude=latitude, longitude=longitude, city=translated_city_name).first()
+        weather_record = Weather.objects.filter(city=translated_city_name).first()
 
         if weather_record:
             update_threshold = timezone.now() - timedelta(minutes=30)

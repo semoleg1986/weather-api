@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "acb44a8e70a092d9770194dfab239a4c42a33b1cf94e67335d8ae21d23af0f42"
+            "sha256": "b96c243ac03cee50d9125ee897aa22f045a658f482ffddbd3e4a1ba4f77557a7"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.8"
+            "python_version": "3.12"
         },
         "sources": [
             {
@@ -260,6 +260,13 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==5.1.0"
+        },
+        "pytelegrambotapi": {
+            "hashes": [
+                "sha256:fba878ff9530841c8c68c728cef1c2588b470608310e085d8c56ed035ab53cd4"
+            ],
+            "index": "pypi",
+            "version": "==4.15.2"
         },
         "python-decouple": {
             "hashes": [

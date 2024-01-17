@@ -27,8 +27,10 @@ class WeatherAPIView(View):
         return None, None
 
     def translate_city_name(self, city_name, target_language='en'):
-        translator = Translator(to_lang=target_language)
-        return translator.translate(city_name)
+        translator = Translator(from_lang="ru", to_lang=target_language)
+        translated_name = translator.translate(city_name)
+        return translated_name.lower()
+
 
 
     def get_weather_data(self, latitude, longitude, city_name):
@@ -36,6 +38,7 @@ class WeatherAPIView(View):
             return {'error': 'Coordinates not found for the specified city.'}
 
         translated_city_name = self.translate_city_name(city_name)
+        print(translated_city_name)
         weather_record = Weather.objects.filter(latitude=latitude, longitude=longitude, city=translated_city_name).first()
 
         if weather_record:
@@ -48,7 +51,7 @@ class WeatherAPIView(View):
                     'wind_speed': weather_record.wind_speed,
                 }
 
-        yandex_api_url = f"https://api.weather.yandex.ru/v2/informers?lat={latitude}&lon={longitude}"
+        yandex_api_url = f"https://api.weather.yandex.ru/v2/forecast?lat={latitude}&lon={longitude}"
         yandex_api_key = config('YANDEX_API_KEY')
         headers = {"X-Yandex-API-Key": yandex_api_key}
 

@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 django = "*"
 requests = "*"
-python-telegram-bot = "*"
 geopy = "*"
 translate = "*"
 python-decouple = "*"

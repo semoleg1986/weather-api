@@ -10,6 +10,7 @@ geopy = "*"
 translate = "*"
 python-decouple = "*"
 pytelegrambotapi = "*"
+coverage = "*"
 
 [dev-packages]
 

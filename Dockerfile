@@ -1,22 +1,21 @@
-FROM python:3.8-slim
+# Use an official Python runtime as a parent image
+FROM python:3.12-slim
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libpq-dev && \
-    rm -rf /var/lib/apt/lists/*
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-WORKDIR /usr/src/app
+RUN pip install pipenv
 
+WORKDIR /app
 
-COPY Pipfile Pipfile.lock /usr/src/app/
+COPY Pipfile Pipfile.lock /app/
 
 RUN pipenv install --deploy --ignore-pipfile
 
-# Копируем файлы проекта в контейнер
-COPY . /usr/src/app/
-
-
-RUN python manage.py collectstatic --noinput
+COPY . /app/
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "<your_project_name>.wsgi:application"]
+CMD ["sh", "-c", "pipenv run python manage.py runserver 0.0.0.0:8000 & pipenv run python manage.py run_telegram_bot"]
+
+

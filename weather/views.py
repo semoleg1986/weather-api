@@ -12,6 +12,15 @@ from telebot import types
 telegram_token = config('TELEGRAM_TOKEN')
 bot = telebot.TeleBot(telegram_token, parse_mode=None)
 
+import socket
+
+def get_django_address_port():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('localhost', 0))
+    addr, port = sock.getsockname()
+    sock.close()
+    return addr, port
+
 class WeatherAPIView(View):
     def get(self, request):
         city_name = request.GET.get('city')
@@ -49,8 +58,9 @@ class WeatherAPIView(View):
         if message.text == 'Узнать погоду': 
             bot.reply_to(message, "Напишите название города", reply_markup=reply_markup)
         else:
+            address, port = get_django_address_port()
             city_name = message.text
-            api_url = f"http://127.0.0.1:8000/api/weather?city={city_name}"
+            api_url = f"http://{address}:8000/api/weather?city={city_name}"
 
             try:
                 response = requests.get(api_url)

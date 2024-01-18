@@ -1,5 +1,20 @@
 # weather_api
 
+## WAY - 1
+
+Load image
+
+```
+docker pull semoleg1986/weather-app
+```
+Start container
+
+```
+docker run -p 8000:8000 semoleg1986/weather-app:latest
+```
+
+## WAY -2 
+
 ## Downloading
 
 ```
@@ -44,12 +59,12 @@ Run migrations to set up the database:
 python manage.py migrate
 ```
 
-Start the Django development server:
+Start the Django development server http://127.0.0.1:8000/api/weather?city=<город>:
 ```
 python3 manage.py runserver
 ```
 
-and other terminal Start the Telegram Bot:
+and other terminal Start the Telegram Bot @Weather-api:
 ```
 python manage.py run_telegram_bot
 ```

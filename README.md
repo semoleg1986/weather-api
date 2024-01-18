@@ -59,7 +59,7 @@ Run migrations to set up the database:
 python manage.py migrate
 ```
 
-Start the Django development server http://127.0.0.1:8000/api/weather?city=<город>:
+Start the Django development server /api/weather?city=<город>:
 ```
 python3 manage.py runserver
 ```

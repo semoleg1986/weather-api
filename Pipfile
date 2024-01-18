@@ -11,6 +11,7 @@ translate = "*"
 python-decouple = "*"
 pytelegrambotapi = "*"
 coverage = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
